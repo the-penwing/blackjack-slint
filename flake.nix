@@ -26,12 +26,16 @@
             wayland
             wayland-protocols
             vulkan-loader
+            libGL
+            mesa
           ];
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
             pkgs.libxkbcommon
             pkgs.wayland
             pkgs.vulkan-loader
             pkgs.fontconfig
+            pkgs.libGL
+            pkgs.mesa
           ];
         };
       };
