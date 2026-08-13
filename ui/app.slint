@@ -1,7 +1,72 @@
+import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+export struct CardData {
+    image: image,
+}
+
+component CardView {
+    in property <image> card-image;
+
+    Rectangle {
+        width: 54px;
+        height: 76px;
+
+        Image {
+            width: 54px;
+            height: 76px;
+            source: card-image;
+            image-rendering: pixelated;
+        }
+    }
+}
+
 export component AppWindow inherits Window {
-    preferred-width: 400px;
-    preferred-height: 300px;
-    Text {
-        text: "Hello, World!";
+    min-width: 500px;
+    min-height: 500px;
+    in property <[CardData]> player-hand: [];
+    in property <[CardData]> dealer-hand: [];
+    callback hit();
+    callback stand();
+    VerticalBox {
+        VerticalBox {
+            Text {
+                text: "Your Hand";
+                font-size: 24px;
+                font-weight: 700;
+                color: black;
+            }
+
+            HorizontalBox {
+                for card in player-hand: CardView {
+                    card-image: card.image;
+                }
+            }
+        }
+
+        VerticalBox {
+            Text {
+                text: "Dealers Hand";
+                font-size: 24px;
+                font-weight: 700;
+                color: black;
+            }
+
+            HorizontalBox {
+                for card in dealer-hand: CardView {
+                    card-image: card.image;
+                }
+            }
+        }
+
+        HorizontalBox {
+            Button {
+                text: "Hit";
+                clicked => { root.hit(); }
+            }
+
+            Button {
+                text: "Stand";
+                clicked => { root.stand(); }
+            }
+        }
     }
 }
