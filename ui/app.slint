@@ -24,15 +24,31 @@ export component AppWindow inherits Window {
     min-height: 500px;
     in property <[CardData]> player-hand: [];
     in property <[CardData]> dealer-hand: [];
+    in property <string> result-text: "";
+    in property <bool> round-over: false;
+    in property <int> player-score: 0;
+    in property <int> wins: 0;
+    in property <int> draws: 0;
+    in property <int> losses: 0;
+    callback new_round();
     callback hit();
     callback stand();
     VerticalBox {
         VerticalBox {
-            Text {
-                text: "Your Hand";
-                font-size: 24px;
-                font-weight: 700;
-                color: black;
+            HorizontalBox {
+                Text {
+                    text: "Your Hand";
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: black;
+                }
+
+                Text {
+                    text: "Hand Value: " + player-score;
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: black;
+                }
             }
 
             HorizontalBox {
@@ -57,15 +73,52 @@ export component AppWindow inherits Window {
             }
         }
 
+        Text {
+            text: result-text;
+            font-size: 20px;
+            color: black;
+        }
+
         HorizontalBox {
-            Button {
-                text: "Hit";
-                clicked => { root.hit(); }
+            Text {
+                text: "Wins: " + wins;
+                font-size: 20px;
+                color: black;
+            }
+
+            Text {
+                text: "Pushes: " + draws;
+                font-size: 20px;
+                color: black;
+            }
+
+            Text {
+                text: "Losses: " + losses;
+                font-size: 20px;
+                color: black;
+            }
+        }
+
+        VerticalBox {
+
+            HorizontalBox {
+                Button {
+                    text: "Hit";
+                    enabled: !round-over;
+                    clicked => { root.hit(); }
+                }
+
+                Button {
+                    text: "Stand";
+                    enabled: !round-over;
+                    clicked => { root.stand(); }
+                }
             }
 
             Button {
-                text: "Stand";
-                clicked => { root.stand(); }
+                text: "New Round";
+                enabled: round-over;
+                clicked => { root.new_round(); }
             }
         }
     }
