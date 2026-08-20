@@ -1,10 +1,10 @@
 slint::include_modules!();
 use blackjack_rs::{self, Action, Card, GameState, GameStatus, Rank};
-use slint::{Image, ModelRc, VecModel};
+use slint::{Image, ModelRc, VecModel, quit_event_loop};
 use std::{cell::RefCell, path::Path, rc::Rc};
 
 fn card_image_path(card: Card) -> String {
-  let suit = card.suit.to_string();
+  let suit = card.suit.to_string().to_lowercase();
   let raw_rank = card.rank;
   let rank: u8 = match raw_rank {
     Rank::Jack => 11,
@@ -13,7 +13,7 @@ fn card_image_path(card: Card) -> String {
     Rank::Ace => 1,
     Rank::Numeric(num) => num,
   };
-  format!("assets/cards/{}_{}.png", suit, rank)
+  format!("assets/cards/{}-{}.png", suit, rank)
 }
 
 fn refresh_ui(app: &AppWindow, game: &GameState) {
@@ -33,7 +33,7 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
       let path = if i == 0 || round_over {
         card_image_path(*card)
       } else {
-        "assets/cards/Unknown_Card.png".to_string()
+        "assets/cards/card-mystery.png".to_string()
       };
       CardData {
         image: Image::load_from_path(Path::new(&path)).unwrap(),
@@ -59,6 +59,9 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
   app.set_draws(ties as i32);
   app.set_losses(losses as i32);
   app.set_round_over(round_over);
+  if round_over {
+    app.set_current_screen(Screen::RoundOver);
+  }
 }
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -97,8 +100,14 @@ fn main() -> Result<(), slint::PlatformError> {
     app.on_new_round(move || {
       let app = app_weak.unwrap();
       game_handle.borrow_mut().setup_round();
+      app.set_current_screen(Screen::Game);
       refresh_ui(&app, &game_handle.borrow());
     });
+  }
+  {
+    app.on_quit(move || {
+      let _ = quit_event_loop();
+    })
   }
   app.run()
 }

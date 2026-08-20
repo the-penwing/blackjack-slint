@@ -1,4 +1,10 @@
 import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import "../assets/font/ttf/supersoft.ttf";
+enum Screen {
+    title,
+    game,
+    round-over,
+}
 export struct CardData {
     image: image,
 }
@@ -7,21 +13,36 @@ component CardView {
     in property <image> card-image;
 
     Rectangle {
-        width: 54px;
-        height: 76px;
+        width: 64px;
+        height: 94px;
 
         Image {
-            width: 54px;
-            height: 76px;
+            width: 64px;
+            height: 94px;
             source: card-image;
             image-rendering: pixelated;
         }
     }
 }
 
-export component AppWindow inherits Window {
-    min-width: 500px;
-    min-height: 500px;
+component TitleScreen {
+    callback start();
+    callback quit();
+    VerticalBox {
+        Button {
+            text: "Start Game!";
+            clicked => { root.start(); }
+        }
+
+        Button {
+            text: "Quit Game";
+            clicked => { root.quit(); }
+        }
+    }
+}
+
+
+component GameScreen {
     in property <[CardData]> player-hand: [];
     in property <[CardData]> dealer-hand: [];
     in property <string> result-text: "";
@@ -38,14 +59,14 @@ export component AppWindow inherits Window {
             HorizontalBox {
                 Text {
                     text: "Your Hand";
-                    font-size: 24px;
+                    font-size: 36px;
                     font-weight: 700;
                     color: black;
                 }
 
                 Text {
                     text: "Hand Value: " + player-score;
-                    font-size: 24px;
+                    font-size: 36px;
                     font-weight: 700;
                     color: black;
                 }
@@ -61,7 +82,7 @@ export component AppWindow inherits Window {
         VerticalBox {
             Text {
                 text: "Dealers Hand";
-                font-size: 24px;
+                font-size: 36px;
                 font-weight: 700;
                 color: black;
             }
@@ -75,26 +96,26 @@ export component AppWindow inherits Window {
 
         Text {
             text: result-text;
-            font-size: 20px;
+            font-size: 24px;
             color: black;
         }
 
         HorizontalBox {
             Text {
                 text: "Wins: " + wins;
-                font-size: 20px;
+                font-size: 24px;
                 color: black;
             }
 
             Text {
                 text: "Pushes: " + draws;
-                font-size: 20px;
+                font-size: 24px;
                 color: black;
             }
 
             Text {
                 text: "Losses: " + losses;
-                font-size: 20px;
+                font-size: 24px;
                 color: black;
             }
         }
@@ -114,12 +135,144 @@ export component AppWindow inherits Window {
                     clicked => { root.stand(); }
                 }
             }
+        }
+    }
+}
 
-            Button {
-                text: "New Round";
-                enabled: round-over;
-                clicked => { root.new_round(); }
+component RoundOverScreen {
+    in property <[CardData]> player-hand: [];
+    in property <[CardData]> dealer-hand: [];
+    in property <string> result-text: "";
+    in property <int> player-score: 0;
+    in property <int> wins: 0;
+    in property <int> draws: 0;
+    in property <int> losses: 0;
+    callback new_round();
+    callback return_to_menu();
+    VerticalBox {
+        VerticalBox {
+            HorizontalBox {
+                Text {
+                    text: "Your Hand";
+                    font-size: 36px;
+                    font-weight: 700;
+                    color: black;
+                }
+
+                Text {
+                    text: "Hand Value: " + player-score;
+                    font-size: 36px;
+                    font-weight: 700;
+                    color: black;
+                }
+            }
+
+            HorizontalBox {
+                for card in player-hand: CardView {
+                    card-image: card.image;
+                }
             }
         }
+
+        VerticalBox {
+            Text {
+                text: "Dealers Hand";
+                font-size: 36px;
+                font-weight: 700;
+                color: black;
+            }
+
+            HorizontalBox {
+                for card in dealer-hand: CardView {
+                    card-image: card.image;
+                }
+            }
+        }
+
+        Text {
+            text: result-text;
+            font-size: 24px;
+            color: black;
+        }
+
+        HorizontalBox {
+            Text {
+                text: "Wins: " + wins;
+                font-size: 24px;
+                color: black;
+            }
+
+            Text {
+                text: "Pushes: " + draws;
+                font-size: 24px;
+                color: black;
+            }
+
+            Text {
+                text: "Losses: " + losses;
+                font-size: 24px;
+                color: black;
+            }
+        }
+
+        HorizontalBox {
+            Button {
+                text: "New Round";
+                clicked => { root.new_round(); }
+            }
+
+            Button {
+                text: "Return to Menu";
+                clicked => { root.return_to_menu(); }
+            }
+        }
+    }
+}
+
+export component AppWindow inherits Window {
+    width: 500px;
+    height: 500px;
+    default-font-family: "Pixel Font - Supersoft";
+    default-font-size: 24px;
+    in-out property <Screen> current-screen: title;
+    in property <[CardData]> player-hand: [];
+    in property <[CardData]> dealer-hand: [];
+    in property <string> result-text: "";
+    in property <bool> round-over: false;
+    in property <int> player-score: 0;
+    in property <int> wins: 0;
+    in property <int> draws: 0;
+    in property <int> losses: 0;
+    callback new_round();
+    callback return_to_menu();
+    callback hit();
+    callback stand();
+    callback quit();
+    if current-screen == Screen.title: TitleScreen {
+        start => { root.current-screen = Screen.game; }
+        quit => { root.quit(); }
+    }
+    if current-screen == Screen.game: GameScreen {
+        player-hand: root.player-hand;
+        dealer-hand: root.dealer-hand;
+        result-text: root.result-text;
+        round-over: root.round-over;
+        player-score: root.player-score;
+        wins: root.wins;
+        draws: root.draws;
+        losses: root.losses;
+        hit => { root.hit(); }
+        stand => { root.stand(); }
+    }
+    if current-screen == Screen.round-over: RoundOverScreen {
+        player-hand: root.player-hand;
+        dealer-hand: root.dealer-hand;
+        result-text: root.result-text;
+        player-score: root.player-score;
+        wins: root.wins;
+        draws: root.draws;
+        losses: root.losses;
+        new_round => { root.new_round(); }
+        return_to_menu => { root.current-screen = Screen.title; }
     }
 }
