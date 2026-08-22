@@ -1,9 +1,20 @@
 slint::include_modules!();
 use blackjack_rs::{self, Action, Card, GameState, GameStatus, Rank};
 use slint::{Image, ModelRc, VecModel, quit_event_loop};
-use std::{cell::RefCell, path::Path, rc::Rc};
+use std::{cell::RefCell, env, path::PathBuf, rc::Rc, sync::OnceLock};
 
-fn card_image_path(card: Card) -> String {
+static ASSETS_DIR: OnceLock<PathBuf> = OnceLock::new();
+
+fn resolve_assets_dir() -> PathBuf {
+  let assets_dir_var = "BLACKJACK_ASSETS_DIR";
+  if let Ok(path) = env::var(assets_dir_var) {
+    PathBuf::from(path)
+  } else {
+    PathBuf::from("./assets")
+  }
+}
+
+fn card_image_path(card: Card) -> PathBuf {
   let suit = card.suit.to_string().to_lowercase();
   let raw_rank = card.rank;
   let rank: u8 = match raw_rank {
@@ -13,7 +24,12 @@ fn card_image_path(card: Card) -> String {
     Rank::Ace => 1,
     Rank::Numeric(num) => num,
   };
-  format!("assets/cards/{}-{}.png", suit, rank)
+
+  let base = ASSETS_DIR.get().unwrap();
+
+  let filename = format!("{}-{}.png", suit, rank);
+
+  base.join("cards").join(filename)
 }
 
 fn refresh_ui(app: &AppWindow, game: &GameState) {
@@ -21,7 +37,7 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
     .player_hand()
     .iter()
     .map(|card| CardData {
-      image: Image::load_from_path(Path::new(&card_image_path(*card))).unwrap(),
+      image: Image::load_from_path(&card_image_path(*card)).unwrap(),
     })
     .collect();
   let round_over = game.status() != GameStatus::InProgress;
@@ -33,10 +49,14 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
       let path = if i == 0 || round_over {
         card_image_path(*card)
       } else {
-        "assets/cards/card-mystery.png".to_string()
+        ASSETS_DIR
+          .get()
+          .unwrap()
+          .join("cards")
+          .join("card-mystery.png")
       };
       CardData {
-        image: Image::load_from_path(Path::new(&path)).unwrap(),
+        image: Image::load_from_path(&path).unwrap(),
       }
     })
     .collect();
@@ -65,6 +85,7 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
 }
 
 fn main() -> Result<(), slint::PlatformError> {
+  ASSETS_DIR.set(resolve_assets_dir()).unwrap();
   let app = AppWindow::new()?;
 
   let game = Rc::new(RefCell::new(GameState::new_game()));
