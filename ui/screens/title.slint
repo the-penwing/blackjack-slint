@@ -1,0 +1,17 @@
+import { VerticalBox } from "std-widgets.slint";
+import { PixelButton } from "../components/pixel-button.slint";
+export component TitleScreen {
+    callback start();
+    callback quit();
+    VerticalBox {
+        PixelButton {
+            text: "Start Game!";
+            clicked => { root.start(); }
+        }
+
+        PixelButton {
+            text: "Quit Game";
+            clicked => { root.quit(); }
+        }
+    }
+}

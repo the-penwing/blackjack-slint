@@ -7,21 +7,6 @@ enum Screen {
 }
 
 
-component TitleScreen {
-    callback start();
-    callback quit();
-    VerticalBox {
-        Button {
-            text: "Start Game!";
-            clicked => { root.start(); }
-        }
-
-        Button {
-            text: "Quit Game";
-            clicked => { root.quit(); }
-        }
-    }
-}
 
 
 component GameScreen {
