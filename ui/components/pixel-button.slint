@@ -1,0 +1,32 @@
+export component PixelButton inherits Rectangle {
+    in-out property <bool> enabled <=> touch-area.enabled;
+    in-out property <string> text;
+    callback clicked <=> touch-area.clicked;
+    min-height: 26px;
+    min-width: txt.preferred-width + 20px;
+
+    property <image> up-img: @image-url("../../assets/buttons/button-up.png", nine-slice(3 4 5 4));
+    property <image> down-img: @image-url("../../assets/buttons/button-down.png", nine-slice(6 4 3 4));
+    property <image> disabled-img: @image-url("../../assets/buttons/button-disabled.png", nine-slice(3 4 5 4));
+
+    img := Image {
+        width: root.width;
+        height: root.height;
+        source: touch-area.enabled
+            ? (touch-area.pressed
+            ? down-img
+            : up-img)
+            : disabled-img;
+    }
+
+    txt := Text {
+        text: root.text;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    touch-area := TouchArea {
+        width: root.width;
+        height: root.height;
+    }
+}
