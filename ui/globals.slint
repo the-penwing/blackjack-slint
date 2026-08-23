@@ -1,0 +1,18 @@
+import { CardData } from "components/card-view.slint";
+
+export global GameData {
+    in-out property <[CardData]> player-hand: [];
+    in-out property <[CardData]> dealer-hand: [];
+    in-out property <string> result-text: "";
+    in-out property <bool> round-over: false;
+    in-out property <int> player-score: 0;
+    in-out property <int> dealer-score: 0;
+    in-out property <int> wins: 0;
+    in-out property <int> draws: 0;
+    in-out property <int> losses: 0;
+
+    callback new-round();
+    callback return-to-menu();
+    callback hit();
+    callback stand();
+}
