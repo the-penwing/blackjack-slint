@@ -1,62 +1,50 @@
+import { GameData } from "../globals.slint";
 import { VerticalBox, HorizontalBox } from "std-widgets.slint";
 import { HandDisplay } from "../components/hand-display.slint";
 import { CardView, CardData } from "../components/card-view.slint";
 import { PixelButton } from "../components/pixel-button.slint";
 
  export component GameScreen {
-    in property <[CardData]> player-hand: [];
-    in property <[CardData]> dealer-hand: [];
-    in property <string> result-text: "";
-    in property <bool> round-over: false;
-    in property <int> player-score: 0;
-    in property <int> dealer-score: 0;
-    in property <int> wins: 0;
-    in property <int> draws: 0;
-    in property <int> losses: 0;
-    callback new_round();
-    callback return_to_menu();
-    callback hit();
-    callback stand();
     VerticalBox {
         HandDisplay {
-            hand: root.player-hand;
+            hand: GameData.player-hand;
             label: "Your Hand";
-            score: root.player-score;
+            score: GameData.player-score;
             show-score: true;
         }
 
         HandDisplay {
-            hand: root.dealer-hand;
+            hand: GameData.dealer-hand;
             label: "Dealers Hand";
-            score: root.dealer-score;
-            show-score: root.round-over;
+            score: GameData.dealer-score;
+            show-score: GameData.round-over;
         }
 
         VerticalBox {
             HorizontalBox {
                 PixelButton {
                     text: "Hit";
-                    enabled: !round-over;
-                    clicked => { root.hit(); }
+                    enabled: !GameData.round-over;
+                    clicked => { GameData.hit(); }
                 }
 
                 PixelButton {
                     text: "Stand";
-                    enabled: !round-over;
-                    clicked => { root.stand(); }
+                    enabled: !GameData.round-over;
+                    clicked => { GameData.stand(); }
                 }
             }
         }
     }
 
-    if root.round-over: Rectangle {
+    if GameData.round-over: Rectangle {
         background: #000000aa;
 
         VerticalBox {
             alignment: center;
 
             Text {
-                text: root.result-text;
+                text: GameData.result-text;
                 font-size: 36px;
                 font-weight: 700;
                 color: white;
@@ -65,19 +53,19 @@ import { PixelButton } from "../components/pixel-button.slint";
 
             HorizontalBox {
                 Text {
-                    text: "Wins: " + root.wins;
+                    text: "Wins: " + GameData.wins;
                     font-size: 24px;
                     color: white;
                 }
 
                 Text {
-                    text: "Pushes: " + root.draws;
+                    text: "Pushes: " + GameData.draws;
                     font-size: 24px;
                     color: white;
                 }
 
                 Text {
-                    text: "Losses: " + root.losses;
+                    text: "Losses: " + GameData.losses;
                     font-size: 24px;
                     color: white;
                 }
@@ -86,12 +74,12 @@ import { PixelButton } from "../components/pixel-button.slint";
             HorizontalBox {
                 PixelButton {
                     text: "New Round";
-                    clicked => { root.new_round(); }
+                    clicked => { GameData.new_round(); }
                 }
 
                 PixelButton {
                     text: "Return to Menu";
-                    clicked => { root.return_to_menu(); }
+                    clicked => { GameData.return_to_menu(); }
                 }
             }
         }
