@@ -1,17 +1,38 @@
-import { VerticalBox } from "std-widgets.slint";
+import { VerticalBox, HorizontalBox } from "std-widgets.slint";
 import { PixelButton } from "../components/pixel-button.slint";
 export component TitleScreen {
     callback start();
     callback quit();
-    VerticalBox {
-        PixelButton {
-            text: "Start Game!";
-            clicked => { root.start(); }
-        }
+    Image {
+        height: root.height;
+        width: root.width;
+        source: @image-url("../../assets/background/backdrop.png");
+    }
 
-        PixelButton {
-            text: "Quit Game";
-            clicked => { root.quit(); }
+    Text {
+        text: "Blackjack";
+        font-size: 50px;
+        font-weight: 700;
+        color: black;
+        x: (root.width - self.width) / 2;
+        y: 220px;
+    }
+
+    Rectangle {
+        width: 250px;
+        height: 50px;
+        x: (root.width - self.width) / 2;
+        y: 255px;
+        HorizontalBox {
+            PixelButton {
+                text: "Start Game!";
+                clicked => { root.start(); }
+            }
+
+            PixelButton {
+                text: "Quit Game";
+                clicked => { root.quit(); }
+            }
         }
     }
 }
