@@ -5,25 +5,7 @@ enum Screen {
     game,
     round-over,
 }
-export struct CardData {
-    image: image,
-}
 
-component CardView {
-    in property <image> card-image;
-
-    Rectangle {
-        width: 64px;
-        height: 94px;
-
-        Image {
-            width: 64px;
-            height: 94px;
-            source: card-image;
-            image-rendering: pixelated;
-        }
-    }
-}
 
 component TitleScreen {
     callback start();
