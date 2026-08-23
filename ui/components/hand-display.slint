@@ -1,0 +1,33 @@
+import { VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { CardView, CardData } from "card-view.slint";
+
+export component HandDisplay {
+    in property <[CardData]> hand: [];
+    in property <string> label: "";
+    in property <int> score: 0;
+    in property <bool> show-score: false;
+
+    VerticalBox {
+        HorizontalBox {
+            Text {
+                text: root.label;
+                font-size: 36px;
+                font-weight: 700;
+                color: black;
+            }
+
+            if root.show-score: Text {
+                text: "Hand Value: " + root.score;
+                font-size: 36px;
+                font-weight: 700;
+                color: black;
+            }
+        }
+
+        HorizontalBox {
+            for card in root.hand: CardView {
+                card-image: card.image;
+            }
+        }
+    }
+}
