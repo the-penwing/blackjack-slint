@@ -48,4 +48,52 @@ import { PixelButton } from "../components/pixel-button.slint";
             }
         }
     }
+
+    if root.round-over: Rectangle {
+        background: #000000aa;
+
+        VerticalBox {
+            alignment: center;
+
+            Text {
+                text: root.result-text;
+                font-size: 36px;
+                font-weight: 700;
+                color: white;
+                horizontal-alignment: center;
+            }
+
+            HorizontalBox {
+                Text {
+                    text: "Wins: " + root.wins;
+                    font-size: 24px;
+                    color: white;
+                }
+
+                Text {
+                    text: "Pushes: " + root.draws;
+                    font-size: 24px;
+                    color: white;
+                }
+
+                Text {
+                    text: "Losses: " + root.losses;
+                    font-size: 24px;
+                    color: white;
+                }
+            }
+
+            HorizontalBox {
+                PixelButton {
+                    text: "New Round";
+                    clicked => { root.new_round(); }
+                }
+
+                PixelButton {
+                    text: "Return to Menu";
+                    clicked => { root.return_to_menu(); }
+                }
+            }
+        }
+    }
 }

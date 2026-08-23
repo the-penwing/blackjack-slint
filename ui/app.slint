@@ -5,7 +5,6 @@ import "../assets/font/supersoft.ttf";
 enum Screen {
     title,
     game,
-    round-over,
 }
 
 
@@ -46,15 +45,6 @@ export component AppWindow inherits Window {
         losses: root.losses;
         hit => { root.hit(); }
         stand => { root.stand(); }
-    }
-    if current-screen == Screen.round-over: RoundOverScreen {
-        player-hand: root.player-hand;
-        dealer-hand: root.dealer-hand;
-        result-text: root.result-text;
-        player-score: root.player-score;
-        wins: root.wins;
-        draws: root.draws;
-        losses: root.losses;
         new_round => { root.new_round(); }
         return_to_menu => { root.current-screen = Screen.title; }
     }
