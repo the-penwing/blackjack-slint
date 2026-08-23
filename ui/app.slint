@@ -1,13 +1,13 @@
-import { CardData, CardView } from "components/card-view.slint";
 import { GameScreen } from "screens/game.slint";
 import { TitleScreen } from "screens/title.slint";
 import "../assets/font/supersoft.ttf";
+
+export { GameData }from "globals.slint";
+
 enum Screen {
     title,
     game,
 }
-
-
 
 export component AppWindow inherits Window {
     width: 500px;
@@ -15,37 +15,11 @@ export component AppWindow inherits Window {
     default-font-family: "Pixel Font - Supersoft";
     default-font-size: 24px;
     in-out property <Screen> current-screen: title;
-    in property <[CardData]> player-hand: [];
-    in property <[CardData]> dealer-hand: [];
-    in property <string> result-text: "";
-    in property <bool> round-over: false;
-    in property <int> player-score: 0;
-    in property <int> dealer-score: 0;
-    in property <int> wins: 0;
-    in property <int> draws: 0;
-    in property <int> losses: 0;
-    callback new_round();
-    callback return_to_menu();
-    callback hit();
-    callback stand();
+    callback start_game();
     callback quit();
     if current-screen == Screen.title: TitleScreen {
-        start => { root.current-screen = Screen.game; }
+        start => { root.start_game(); }
         quit => { root.quit(); }
     }
-    if current-screen == Screen.game: GameScreen {
-        player-hand: root.player-hand;
-        dealer-hand: root.dealer-hand;
-        result-text: root.result-text;
-        round-over: root.round-over;
-        player-score: root.player-score;
-        dealer-score: root.dealer-score;
-        wins: root.wins;
-        draws: root.draws;
-        losses: root.losses;
-        hit => { root.hit(); }
-        stand => { root.stand(); }
-        new_round => { root.new_round(); }
-        return_to_menu => { root.current-screen = Screen.title; }
-    }
+    if current-screen == Screen.game: GameScreen { }
 }

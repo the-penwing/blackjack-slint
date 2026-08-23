@@ -71,15 +71,23 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
 
   let (wins, losses, ties) = game.stats();
 
-  app.set_player_hand(ModelRc::new(VecModel::from(player_cards)));
-  app.set_dealer_hand(ModelRc::new(VecModel::from(dealer_cards)));
-  app.set_result_text(result_text.into());
-  app.set_player_score(game.player_score() as i32);
-  app.set_dealer_score(game.dealer_score() as i32);
-  app.set_wins(wins as i32);
-  app.set_draws(ties as i32);
-  app.set_losses(losses as i32);
-  app.set_round_over(round_over);
+  app
+    .global::<GameData>()
+    .set_player_hand(ModelRc::new(VecModel::from(player_cards)));
+  app
+    .global::<GameData>()
+    .set_dealer_hand(ModelRc::new(VecModel::from(dealer_cards)));
+  app.global::<GameData>().set_result_text(result_text.into());
+  app
+    .global::<GameData>()
+    .set_player_score(game.player_score() as i32);
+  app
+    .global::<GameData>()
+    .set_dealer_score(game.dealer_score() as i32);
+  app.global::<GameData>().set_wins(wins as i32);
+  app.global::<GameData>().set_draws(ties as i32);
+  app.global::<GameData>().set_losses(losses as i32);
+  app.global::<GameData>().set_round_over(round_over);
 }
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -93,7 +101,17 @@ fn main() -> Result<(), slint::PlatformError> {
   {
     let game_handle = game.clone();
     let app_weak = app.as_weak();
-    app.on_hit(move || {
+    app.on_start_game(move || {
+      let app = app_weak.unwrap();
+      game_handle.borrow_mut().setup_round();
+      app.set_current_screen(Screen::Game);
+      refresh_ui(&app, &game_handle.borrow());
+    });
+  }
+  {
+    let game_handle = game.clone();
+    let app_weak = app.as_weak();
+    app.global::<GameData>().on_hit(move || {
       let app = app_weak.unwrap();
       if game_handle.borrow().status() == GameStatus::InProgress {
         game_handle.borrow_mut().update(Action::Hit);
@@ -104,7 +122,7 @@ fn main() -> Result<(), slint::PlatformError> {
   {
     let game_handle = game.clone();
     let app_weak = app.as_weak();
-    app.on_stand(move || {
+    app.global::<GameData>().on_stand(move || {
       let app = app_weak.unwrap();
       if game_handle.borrow().status() == GameStatus::InProgress {
         game_handle.borrow_mut().update(Action::Stand);
@@ -116,11 +134,20 @@ fn main() -> Result<(), slint::PlatformError> {
   {
     let game_handle = game.clone();
     let app_weak = app.as_weak();
-    app.on_new_round(move || {
+    app.global::<GameData>().on_new_round(move || {
       let app = app_weak.unwrap();
       game_handle.borrow_mut().setup_round();
       app.set_current_screen(Screen::Game);
       refresh_ui(&app, &game_handle.borrow());
+    });
+  }
+  {
+    let game_handle = game.clone();
+    let app_weak = app.as_weak();
+    app.global::<GameData>().on_return_to_menu(move || {
+      let app = app_weak.unwrap();
+      *game_handle.borrow_mut() = GameState::new_game();
+      app.set_current_screen(Screen::Title);
     });
   }
   {
