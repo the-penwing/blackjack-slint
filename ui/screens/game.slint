@@ -1,0 +1,51 @@
+import { VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { HandDisplay } from "../components/hand-display.slint";
+import { CardView, CardData } from "../components/card-view.slint";
+import { PixelButton } from "../components/pixel-button.slint";
+
+ export component GameScreen {
+    in property <[CardData]> player-hand: [];
+    in property <[CardData]> dealer-hand: [];
+    in property <string> result-text: "";
+    in property <bool> round-over: false;
+    in property <int> player-score: 0;
+    in property <int> dealer-score: 0;
+    in property <int> wins: 0;
+    in property <int> draws: 0;
+    in property <int> losses: 0;
+    callback new_round();
+    callback return_to_menu();
+    callback hit();
+    callback stand();
+    VerticalBox {
+        HandDisplay {
+            hand: root.player-hand;
+            label: "Your Hand";
+            score: root.player-score;
+            show-score: true;
+        }
+
+        HandDisplay {
+            hand: root.dealer-hand;
+            label: "Dealers Hand";
+            score: root.dealer-score;
+            show-score: root.round-over;
+        }
+
+        VerticalBox {
+            HorizontalBox {
+                PixelButton {
+                    text: "Hit";
+                    enabled: !round-over;
+                    clicked => { root.hit(); }
+                }
+
+                PixelButton {
+                    text: "Stand";
+                    enabled: !round-over;
+                    clicked => { root.stand(); }
+                }
+            }
+        }
+    }
+}

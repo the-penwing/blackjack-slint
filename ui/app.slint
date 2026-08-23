@@ -1,4 +1,6 @@
-import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import { CardData, CardView } from "components/card-view.slint";
+import { GameScreen } from "screens/game.slint";
+import { TitleScreen } from "screens/title.slint";
 import "../assets/font/supersoft.ttf";
 enum Screen {
     title,
@@ -7,194 +9,6 @@ enum Screen {
 }
 
 
-
-
-component GameScreen {
-    in property <[CardData]> player-hand: [];
-    in property <[CardData]> dealer-hand: [];
-    in property <string> result-text: "";
-    in property <bool> round-over: false;
-    in property <int> player-score: 0;
-    in property <int> wins: 0;
-    in property <int> draws: 0;
-    in property <int> losses: 0;
-    callback new_round();
-    callback hit();
-    callback stand();
-    VerticalBox {
-        VerticalBox {
-            HorizontalBox {
-                Text {
-                    text: "Your Hand";
-                    font-size: 36px;
-                    font-weight: 700;
-                    color: black;
-                }
-
-                Text {
-                    text: "Hand Value: " + player-score;
-                    font-size: 36px;
-                    font-weight: 700;
-                    color: black;
-                }
-            }
-
-            HorizontalBox {
-                for card in player-hand: CardView {
-                    card-image: card.image;
-                }
-            }
-        }
-
-        VerticalBox {
-            Text {
-                text: "Dealers Hand";
-                font-size: 36px;
-                font-weight: 700;
-                color: black;
-            }
-
-            HorizontalBox {
-                for card in dealer-hand: CardView {
-                    card-image: card.image;
-                }
-            }
-        }
-
-        Text {
-            text: result-text;
-            font-size: 24px;
-            color: black;
-        }
-
-        HorizontalBox {
-            Text {
-                text: "Wins: " + wins;
-                font-size: 24px;
-                color: black;
-            }
-
-            Text {
-                text: "Pushes: " + draws;
-                font-size: 24px;
-                color: black;
-            }
-
-            Text {
-                text: "Losses: " + losses;
-                font-size: 24px;
-                color: black;
-            }
-        }
-
-        VerticalBox {
-
-            HorizontalBox {
-                Button {
-                    text: "Hit";
-                    enabled: !round-over;
-                    clicked => { root.hit(); }
-                }
-
-                Button {
-                    text: "Stand";
-                    enabled: !round-over;
-                    clicked => { root.stand(); }
-                }
-            }
-        }
-    }
-}
-
-component RoundOverScreen {
-    in property <[CardData]> player-hand: [];
-    in property <[CardData]> dealer-hand: [];
-    in property <string> result-text: "";
-    in property <int> player-score: 0;
-    in property <int> wins: 0;
-    in property <int> draws: 0;
-    in property <int> losses: 0;
-    callback new_round();
-    callback return_to_menu();
-    VerticalBox {
-        VerticalBox {
-            HorizontalBox {
-                Text {
-                    text: "Your Hand";
-                    font-size: 36px;
-                    font-weight: 700;
-                    color: black;
-                }
-
-                Text {
-                    text: "Hand Value: " + player-score;
-                    font-size: 36px;
-                    font-weight: 700;
-                    color: black;
-                }
-            }
-
-            HorizontalBox {
-                for card in player-hand: CardView {
-                    card-image: card.image;
-                }
-            }
-        }
-
-        VerticalBox {
-            Text {
-                text: "Dealers Hand";
-                font-size: 36px;
-                font-weight: 700;
-                color: black;
-            }
-
-            HorizontalBox {
-                for card in dealer-hand: CardView {
-                    card-image: card.image;
-                }
-            }
-        }
-
-        Text {
-            text: result-text;
-            font-size: 24px;
-            color: black;
-        }
-
-        HorizontalBox {
-            Text {
-                text: "Wins: " + wins;
-                font-size: 24px;
-                color: black;
-            }
-
-            Text {
-                text: "Pushes: " + draws;
-                font-size: 24px;
-                color: black;
-            }
-
-            Text {
-                text: "Losses: " + losses;
-                font-size: 24px;
-                color: black;
-            }
-        }
-
-        HorizontalBox {
-            Button {
-                text: "New Round";
-                clicked => { root.new_round(); }
-            }
-
-            Button {
-                text: "Return to Menu";
-                clicked => { root.return_to_menu(); }
-            }
-        }
-    }
-}
 
 export component AppWindow inherits Window {
     width: 500px;
@@ -207,6 +21,7 @@ export component AppWindow inherits Window {
     in property <string> result-text: "";
     in property <bool> round-over: false;
     in property <int> player-score: 0;
+    in property <int> dealer-score: 0;
     in property <int> wins: 0;
     in property <int> draws: 0;
     in property <int> losses: 0;
@@ -225,6 +40,7 @@ export component AppWindow inherits Window {
         result-text: root.result-text;
         round-over: root.round-over;
         player-score: root.player-score;
+        dealer-score: root.dealer-score;
         wins: root.wins;
         draws: root.draws;
         losses: root.losses;
