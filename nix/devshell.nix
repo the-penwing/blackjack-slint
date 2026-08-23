@@ -5,6 +5,9 @@
 pkgs.mkShell {
   nativeBuildInputs = [pkgs.pkg-config rustToolchain];
   name = "blackjack-slint";
+  packages = with pkgs; [
+    slint-viewer
+  ];
   buildInputs = with pkgs; [
     fontconfig
     libxkbcommon
