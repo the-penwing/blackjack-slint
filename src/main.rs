@@ -75,13 +75,11 @@ fn refresh_ui(app: &AppWindow, game: &GameState) {
   app.set_dealer_hand(ModelRc::new(VecModel::from(dealer_cards)));
   app.set_result_text(result_text.into());
   app.set_player_score(game.player_score() as i32);
+  app.set_dealer_score(game.dealer_score() as i32);
   app.set_wins(wins as i32);
   app.set_draws(ties as i32);
   app.set_losses(losses as i32);
   app.set_round_over(round_over);
-  if round_over {
-    app.set_current_screen(Screen::RoundOver);
-  }
 }
 
 fn main() -> Result<(), slint::PlatformError> {
