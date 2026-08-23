@@ -5,6 +5,12 @@ import { CardView, CardData } from "../components/card-view.slint";
 import { PixelButton } from "../components/pixel-button.slint";
 
  export component GameScreen {
+    Image {
+        height: root.height;
+        width: root.width;
+        source: @image-url("../../assets/background/backdrop.png");
+    }
+
     VerticalBox {
         HandDisplay {
             hand: GameData.player-hand;
@@ -39,47 +45,57 @@ import { PixelButton } from "../components/pixel-button.slint";
 
     if GameData.round-over: Rectangle {
         background: #000000aa;
+        Rectangle {
+            height: 150px;
+            width: 300px;
 
-        VerticalBox {
-            alignment: center;
-
-            Text {
-                text: GameData.result-text;
-                font-size: 36px;
-                font-weight: 700;
-                color: white;
-                horizontal-alignment: center;
+            Image {
+                height: 150px;
+                width: 300px;
+                source: @image-url("../../assets/background/overlay.png");
             }
 
-            HorizontalBox {
-                Text {
-                    text: "Wins: " + GameData.wins;
-                    font-size: 24px;
-                    color: white;
-                }
+            VerticalBox {
+                alignment: center;
 
                 Text {
-                    text: "Pushes: " + GameData.draws;
-                    font-size: 24px;
+                    text: GameData.result-text;
+                    font-size: 36px;
+                    font-weight: 700;
                     color: white;
+                    horizontal-alignment: center;
                 }
 
-                Text {
-                    text: "Losses: " + GameData.losses;
-                    font-size: 24px;
-                    color: white;
-                }
-            }
+                HorizontalBox {
+                    Text {
+                        text: "Wins: " + GameData.wins;
+                        font-size: 24px;
+                        color: white;
+                    }
 
-            HorizontalBox {
-                PixelButton {
-                    text: "New Round";
-                    clicked => { GameData.new_round(); }
+                    Text {
+                        text: "Pushes: " + GameData.draws;
+                        font-size: 24px;
+                        color: white;
+                    }
+
+                    Text {
+                        text: "Losses: " + GameData.losses;
+                        font-size: 24px;
+                        color: white;
+                    }
                 }
 
-                PixelButton {
-                    text: "Return to Menu";
-                    clicked => { GameData.return_to_menu(); }
+                HorizontalBox {
+                    PixelButton {
+                        text: "New Round";
+                        clicked => { GameData.new_round(); }
+                    }
+
+                    PixelButton {
+                        text: "Return to Menu";
+                        clicked => { GameData.return_to_menu(); }
+                    }
                 }
             }
         }
