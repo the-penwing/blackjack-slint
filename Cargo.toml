@@ -5,14 +5,14 @@ edition = "2024"
 
 [dependencies]
 blackjack-rs = "0.1.1"
-slint = "1.17.1"
+slint = { version = "1.17.1", default-features = false, features = ["backend-winit", "compat-1-2", "renderer-femtovg"] }
 
 [build-dependencies]
 slint-build = "1.17.1"
 
 [profile.release]
-opt-level = "s"
+opt-level = "z"
 strip = true
-lto = "thin"
+lto = true
 panic = "abort"
 codegen-units = 1
