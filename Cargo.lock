@@ -582,9 +582,9 @@ dependencies = [
 
 [[package]]
 name = "blackjack-rs"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "feb227ea2af2ee54db925064525f593c7af39d3bbe933e88ff0a3c1c0f210c40"
+checksum = "cf4f105c0c0428210dc8ffb94ea6255dd0a0037d9ba461fe004690bd211dd0aa"
 dependencies = [
  "rand 0.10.2",
 ]
@@ -4755,7 +4755,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.4.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix 1.1.4",
  "windows-sys 0.61.2",
