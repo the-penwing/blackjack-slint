@@ -9,3 +9,10 @@ slint = "1.17.1"
 
 [build-dependencies]
 slint-build = "1.17.1"
+
+[profile.release]
+opt-level = "s"
+strip = true
+lto = "thin"
+panic = "abort"
+codegen-units = 1
