@@ -9,6 +9,7 @@ pkgs.mkShell {
     just
     slint-viewer
     slint-lsp
+    alejandra
   ];
   buildInputs = with pkgs; [
     fontconfig
