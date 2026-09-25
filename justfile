@@ -2,23 +2,23 @@
 default:
   just --list
 
-# run the app inside the nix shell
+# run the app
 run:
-  nix develop -c cargo run
+  cargo run
 
 # clippy
 clippy:
-  nix develop -c cargo clippy -- -D warnings
+  cargo clippy -- -D warnings
 
 # format
 fmt:
-  nix develop -c cargo fmt
-  nix develop -c slint-lsp format --inline **/*.slint
-  nix develop -c alejandra .
+  cargo fmt
+  slint-lsp format --inline **/*.slint
+  alejandra .
 
 # check (format -> clippy)
 check: fmt clippy
 
 # build release binary
 build:
- nix develop -c cargo build --release
+ cargo build --release
